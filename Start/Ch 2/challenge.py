@@ -11,22 +11,41 @@
 # -- get_description returns formats for stocks and bonds
 # For stocks: "Ticker: Company -- $Price"
 # For bonds: "description: duration'yr' : $price : yieldamt%"
+from abc import ABC, abstractmethod
 
-class Asset():
-    pass
+class Asset(ABC):
+    # Parent classes passes price attribute to children
+    def __init__(self,price):
+        self.price = price
+    # abstract method is used to prevent instantiating Asset/ abstract base class
+    @abstractmethod
+    def get_description(self):
+        pass
 
-class Stock():
-    pass
+class Stock(Asset):
+    def __init__(self,ticker, price, companyname):
+        super().__init__(price)
+        self.companyname = companyname
+        self.ticker = ticker
 
-class Bond():
-    pass
+    def get_description(self):
+        return f"{self.ticker}: {self.companyname} -- ${self.price}"
 
+class Bond(Asset):
+    def __init__(self, price, description, duration, yieldamt):
+        super().__init__(price)
+        self.description = description
+        self.duration = duration
+        self.yieldamt = yieldamt
+
+    def get_description(self):
+        return f"{self.description}: {self.duration}yr : ${self.price} : {self.yieldamt}%"
 
 # ~~~~~~~~~ TEST CODE ~~~~~~~~~
 try:
-   ast = Asset(100.0)
+    ast = Asset(100.0)
 except:
-   print("Can't instantiate Asset!")
+    print("Can't instantiate Asset!")
 
 msft = Stock("MSFT", 342.0, "Microsoft Corp")
 goog = Stock("GOOG", 135.0, "Google Inc")
